@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sumit Nagar - Interactive Resume</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutral -->
+    <!-- Application Structure Plan: The SPA is designed as an interactive portfolio. A sticky navigation bar allows users (recruiters) to jump to key sections: Skills, Projects, Education. The core of the application is the 'Projects' section, which uses an interactive card layout. Clicking a card expands to show a detailed view with a conceptual flowchart and technologies used. This structure transforms the linear resume into an engaging, non-linear exploration, prioritizing user engagement and quick access to critical information. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Technical Skills List -> Goal: Showcase proficiency -> Viz: Horizontal Bar Chart (Chart.js/Canvas) for visual comparison of self-assessed confidence levels. Interaction: Static but visually engaging.
+        - Report Info: Projects List -> Goal: Detail project architecture & tech stack -> Viz: Interactive Cards. Interaction: Clicking a card triggers a JS function to expand a detailed view with a project flowchart (built with HTML/CSS) and tech tags, providing depth on demand.
+        - Report Info: Education/Certs -> Goal: Present history -> Viz: Clean, styled lists/timeline layout. Interaction: None, purely informational.
+        - Justification: This approach turns passive information into an interactive experience, encouraging exploration rather than just reading.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8;
+            color: #1a1a1a;
+        }
+        .accent-color { color: #005f73; }
+        .accent-bg { background-color: #005f73; }
+        .accent-border { border-color: #005f73; }
+        .card-bg { background-color: #ffffff; }
+        .section-bg { background-color: #F1F1F1; }
+        .detail-view {
+            display: none;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.7s ease-in-out;
+        }
+        .detail-view.active {
+            display: block;
+            max-height: 1000px; /* Adjust as needed */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 400px;
+            max-height: 50vh;
+        }
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header & Navigation -->
+    <header id="header" class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#home" class="text-xl font-bold accent-color">Sumit Nagar</a>
+            <div class="hidden md:flex space-x-8">
+                <a href="#skills" class="text-gray-600 hover:accent-color transition-colors">Skills</a>
+                <a href="#projects" class="text-gray-600 hover:accent-color transition-colors">Projects</a>
+                <a href="#education" class="text-gray-600 hover:accent-color transition-colors">Education</a>
+                <a href="#certifications" class="text-gray-600 hover:accent-color transition-colors">Certifications</a>
+            </div>
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-gray-600 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden">
+            <a href="#skills" class="block px-6 py-2 text-sm text-gray-600 hover:bg-gray-100">Skills</a>
+            <a href="#projects" class="block px-6 py-2 text-sm text-gray-600 hover:bg-gray-100">Projects</a>
+            <a href="#education" class="block px-6 py-2 text-sm text-gray-600 hover:bg-gray-100">Education</a>
+            <a href="#certifications" class="block px-6 py-2 text-sm text-gray-600 hover:bg-gray-100">Certifications</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+
+        <!-- Home/Hero Section -->
+        <section id="home" class="text-center py-20">
+            <h1 class="text-5xl md:text-6xl font-bold tracking-tight">Sumit Nagar</h1>
+            <p class="mt-4 text-xl text-gray-600">Electrical & Electronics Engineer | Automation & API Enthusiast</p>
+            <p class="mt-6 max-w-2xl mx-auto text-gray-500">
+                A highly motivated engineering student with a strong foundation in software development and a passion for creating practical, automated solutions. I have proven experience in leveraging REST APIs and data processing to build diverse and functional applications. I am actively seeking a dynamic role where I can apply my technical and problem-solving skills to real-world challenges.
+            </p>
+            <div class="mt-8 flex justify-center space-x-6">
+                 <a href="mailto:nagarsumit6785@gmail.com" class="text-gray-500 hover:accent-color transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                </a>
+                <a href="https://linkedin.com/in/sumit-nagar-211832275" target="_blank" class="text-gray-500 hover:accent-color transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+                <a href="https://github.com/sumitnagar07" target="_blank" class="text-gray-500 hover:accent-color transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                </a>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section id="skills" class="py-20 section-bg -mx-6 px-6">
+            <div class="container mx-auto">
+                <h2 class="text-3xl font-bold text-center mb-2">Technical Skills</h2>
+                <p class="text-center text-gray-600 max-w-2xl mx-auto mb-12">This chart represents my self-assessed confidence level with various technologies and concepts, providing a quick overview of my technical capabilities.</p>
+                <div class="chart-container">
+                    <canvas id="skillsChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="py-20">
+            <h2 class="text-3xl font-bold text-center mb-2">Projects Showcase</h2>
+            <p class="text-center text-gray-600 max-w-2xl mx-auto mb-12">Here are some of the projects I've built. They demonstrate my ability to work with APIs, automation, and data. Click on any project card to see more details about its architecture and the technologies used.</p>
+            <div id="project-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Project cards will be injected here by JavaScript -->
+            </div>
+        </section>
+
+        <!-- Education Section -->
+        <section id="education" class="py-20 section-bg -mx-6 px-6">
+            <div class="container mx-auto">
+                <h2 class="text-3xl font-bold text-center mb-12">Education</h2>
+                <div class="max-w-3xl mx-auto">
+                    <div class="relative pl-8 sm:pl-10 py-6 group">
+                        <div class="flex flex-col sm:flex-row items-start mb-1 group-last:before:hidden before:absolute before:left-2 sm:before:left-0 before:h-full before:px-px before:bg-gray-300 sm:before:ml-[6.5rem] before:self-start before:-translate-x-1/2 before:translate-y-3 after:absolute after:left-2 sm:after:left-0 after:w-2 after:h-2 after:bg-blue-600 after:border-4 after:box-content after:border-gray-50 after:rounded-full sm:after:ml-[6.5rem] after:-translate-x-1/2 after:translate-y-1.5">
+                            <time class="sm:absolute left-0 translate-y-0.5 inline-flex items-center justify-center text-xs font-semibold uppercase w-28 h-6 mb-3 sm:mb-0 text-white bg-blue-600 rounded-full">2022 - 2026</time>
+                            <div class="text-xl font-bold accent-color">ABES Engineering College</div>
+                        </div>
+                        <div class="ml-1 sm:ml-36">
+                            <h3 class="font-semibold">Bachelor of Electrical and Electronics Engineering</h3>
+                            <p class="text-gray-500 mt-1">Ghaziabad, UP</p>
+                            <p class="text-gray-500 mt-1">CGPA: 6.34</p>
+                        </div>
+                    </div>
+                     <div class="relative pl-8 sm:pl-10 py-6 group">
+                        <div class="flex flex-col sm:flex-row items-start mb-1 group-last:before:hidden before:absolute before:left-2 sm:before:left-0 before:h-full before:px-px before:bg-gray-300 sm:before:ml-[6.5rem] before:self-start before:-translate-x-1/2 before:translate-y-3 after:absolute after:left-2 sm:after:left-0 after:w-2 after:h-2 after:bg-blue-600 after:border-4 after:box-content after:border-gray-50 after:rounded-full sm:after:ml-[6.5rem] after:-translate-x-1/2 after:translate-y-1.5">
+                            <time class="sm:absolute left-0 translate-y-0.5 inline-flex items-center justify-center text-xs font-semibold uppercase w-28 h-6 mb-3 sm:mb-0 text-white bg-blue-600 rounded-full">Completed</time>
+                            <div class="text-xl font-bold accent-color">Kendriya Vidyalaya N.T.P.C Dadri</div>
+                        </div>
+                         <div class="ml-1 sm:ml-36">
+                            <h3 class="font-semibold">High School (Class X & XII)</h3>
+                            <p class="text-gray-500 mt-1">Dadri, UP</p>
+                            <p class="text-gray-500 mt-1">Scores: 75.4% (X), 67.16% (XII)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Certifications Section -->
+        <section id="certifications" class="py-20">
+            <h2 class="text-3xl font-bold text-center mb-12">Certifications</h2>
+            <div class="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-center">
+                <div class="card-bg p-6 rounded-lg shadow-md">Certified in Python Programming</div>
+                <div class="card-bg p-6 rounded-lg shadow-md">Electric Vehicle Certification</div>
+                <div class="card-bg p-6 rounded-lg shadow-md">Certificate of Best Decision Maker</div>
+                <div class="card-bg p-6 rounded-lg shadow-md">Effective Decision-Making Skills</div>
+                <div class="card-bg p-6 rounded-lg shadow-md">Best Communicator & Growth Intent</div>
+            </div>
+        </section>
+
+    </main>
+    
+    <footer class="bg-gray-800 text-white mt-12">
+        <div class="container mx-auto px-6 py-8 text-center">
+            <p>&copy; 2025 Sumit Nagar. All rights reserved.</p>
+            <p class="text-gray-400 text-sm mt-2">Interactive resume built with HTML, Tailwind CSS, and Chart.js.</p>
+        </div>
+    </footer>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Mobile Menu Toggle
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    mobileMenuButton.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+    });
+
+    // Skills Chart
+    const skillsData = {
+        labels: ['Python', 'SQL', 'REST APIs', 'Automation', 'HTML & CSS', 'C', 'Data Structures', 'DBMS'],
+        datasets: [{
+            label: 'Confidence Level',
+            data: [9, 7, 9, 8, 8, 6, 7, 7], // Self-assessed scores out of 10
+            backgroundColor: 'rgba(0, 95, 115, 0.6)',
+            borderColor: 'rgba(0, 95, 115, 1)',
+            borderWidth: 1
+        }]
+    };
+
+    const skillsChartCtx = document.getElementById('skillsChart').getContext('2d');
+    new Chart(skillsChartCtx, {
+        type: 'bar',
+        data: skillsData,
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `Confidence: ${context.raw}/10`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    max: 10,
+                    grid: {
+                        color: 'rgba(0,0,0,0.05)'
+                    }
+                },
+                y: {
+                     grid: {
+                        display: false
+                    }
+                }
+            }
+        }
+    });
+
+    // Projects Data
+    const projects = [
+        {
+            id: 'proj-flight',
+            title: 'Cheap Flight Finder',
+            shortDesc: 'A CLI tool to find and get alerts for cheap flights.',
+            longDesc: 'Developed a command-line tool that queries Amadeus & Kiwi APIs across over 300 routes. It caches historical fares to a database and triggers email/SMS alerts for price drops greater than 20%. The script is scheduled to run daily using GitHub Actions for continuous monitoring.',
+            technologies: ['Python', 'REST API', 'SMTP', 'Twilio', 'GitHub Actions'],
+            diagram: ['User Config', 'Kiwi/Amadeus API', 'Price Check (>20% drop?)', 'Email/SMS Alert']
+        },
+        {
+            id: 'proj-birthday',
+            title: 'Automated Birthday Mailer',
+            shortDesc: 'A Python script to send personalized birthday emails automatically.',
+            longDesc: 'Engineered a Python script that reads a list of contacts from a CSV file. It checks daily for birthdays and sends a personalized, heartfelt email using SMTP. The process is fully automated using a scheduled cron job on a server.',
+            technologies: ['Python', 'SMTP', 'CSV', 'Cron Job'],
+            diagram: ['Read CSV', 'Check Today\'s Date', 'Match Birthday', 'Send Personalized Email']
+        },
+        {
+            id: 'proj-iss',
+            title: 'ISS Overhead Notifier',
+            shortDesc: 'Get desktop notifications when the ISS is passing overhead.',
+            longDesc: 'Created a desktop application that polls the Open Notify API to track the real-time location of the International Space Station. It calculates if the ISS is within a visible range of the user\'s location and delivers a desktop notification to alert them to look up.',
+            technologies: ['Python', 'REST API', 'Desktop Notifications'],
+            diagram: ['User Location', 'Open Notify API', 'Check Proximity', 'Desktop Notification']
+        },
+        {
+            id: 'proj-rain',
+            title: 'Rain Alert SMS',
+            shortDesc: 'Receive SMS warnings before it starts to rain.',
+            longDesc: 'Implemented a system that fetches live weather forecast data from a weather API. It analyzes the precipitation probability for the user\'s location and sends an SMS warning via Twilio if the probability exceeds a user-defined threshold, helping them prepare for rain.',
+            technologies: ['Python', 'REST API', 'Twilio SMS'],
+            diagram: ['Get Weather Data', 'Check Rain Probability', 'Threshold Exceeded?', 'Send SMS Alert']
+        },
+        {
+            id: 'proj-stock',
+            title: 'Stock News Monitor',
+            shortDesc: 'Get relevant stock news when prices move significantly.',
+            longDesc: 'Built a tool that combines data from a stock-price API and a news API. It monitors specified stocks and automatically surfaces relevant news headlines when intraday price movements exceed a 5% threshold, keeping the user informed of significant market events.',
+            technologies: ['Python', 'REST API', 'Data Processing'],
+            diagram: ['Fetch Stock Price', 'Check Price Change (>5%)', 'Fetch Relevant News', 'Display Headlines']
+        },
+        {
+            id: 'proj-habit',
+            title: 'Habit Tracker',
+            shortDesc: 'A console application for logging daily habits.',
+            longDesc: 'Developed a full CRUD (Create, Read, Update, Delete) console application to log daily habits. It interacts with the Pixela API to visualize progress as graphs, using POST, PUT, and DELETE requests with token-based authentication for secure data management.',
+            technologies: ['Python', 'REST API', 'CRUD', 'Authentication'],
+            diagram: ['User Input (Habit)', 'Pixela API (POST/PUT)', 'Log Data', 'Generate Graph']
+        }
+    ];
+
+    // Populate Projects Grid
+    const projectGrid = document.getElementById('project-grid');
+    projects.forEach(project => {
+        const projectElement = document.createElement('div');
+        projectElement.innerHTML = `
+            <div id="${project.id}" class="project-card card-bg rounded-lg shadow-lg overflow-hidden cursor-pointer transition-transform transform hover:-translate-y-1">
+                <div class="p-6">
+                    <h3 class="text-xl font-bold">${project.title}</h3>
+                    <p class="mt-2 text-gray-600">${project.shortDesc}</p>
+                </div>
+            </div>
+            <div id="${project.id}-detail" class="detail-view col-span-1 md:col-span-2 lg:col-span-3 -mt-6">
+                <div class="card-bg p-8 rounded-b-lg shadow-inner">
+                    <p class="text-gray-600 mb-6">${project.longDesc}</p>
+                    <div class="mb-6">
+                        <h4 class="font-semibold mb-3">Technologies Used:</h4>
+                        <div class="flex flex-wrap gap-2">
+                            ${project.technologies.map(tech => `<span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">${tech}</span>`).join('')}
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold mb-3">Conceptual Flow:</h4>
+                        <div class="flex flex-wrap items-center gap-2 text-sm text-center">
+                            ${project.diagram.map((step, index) => `
+                                <div class="flex-shrink-0 bg-gray-100 p-2 rounded">${step}</div>
+                                ${index < project.diagram.length - 1 ? '<div class="text-gray-400 font-bold">→</div>' : ''}
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        projectGrid.appendChild(projectElement);
+    });
+
+    // Project Card Click Handler
+    document.querySelectorAll('.project-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const detailId = `${card.id}-detail`;
+            const detailView = document.getElementById(detailId);
+            
+            // Close any other open detail views
+            document.querySelectorAll('.detail-view.active').forEach(openDetail => {
+                if(openDetail.id !== detailId) {
+                    openDetail.classList.remove('active');
+                }
+            });
+
+            // Toggle the clicked one
+            detailView.classList.toggle('active');
+        });
+    });
+
+});
+</script>
+
+</body>
+</html>
